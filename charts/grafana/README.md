@@ -310,6 +310,8 @@ need to instead set `global.imageRegistry`.
 | `networkPolicy.egress.enabled`             | Enable the creation of an egress network policy              | `false`   |
 | `networkPolicy.egress.ports`               | An array of ports to allow for the egress                    | `[]`    |
 | `enableKubeBackwardCompatibility`          | Enable backward compatibility of kubernetes where pod's defintion version below 1.13 doesn't have the enableServiceLinks option  | `false`     |
+| `grafana.users`               | An array of users to create in setup                    | `[]`    |
+| `grafana.userPasswords`               | An array of users pasword                    | `[]`    |
 
 ### Example ingress with path
 
@@ -782,3 +784,35 @@ grafana.ini:
   alerting:
     enabled: false
 ```
+# Adding Users to Grafana via Helm Chart
+
+In the `values.yaml` file of the Helm Chart, you can preconfigure users during Grafana deployment using the following parameters:
+
+- **`grafana.users`** – A list of usernames to be created in Grafana.  
+- **`grafana.userPasswords`** – A list of passwords corresponding to the users added.  
+- **Passwords should be securely stored using GitHub Encrypted Secrets.**
+
+## Creating GitHub Encrypted Secrets for Each User
+
+To securely manage user passwords, **DO NOT** store them directly in `values.yaml`. Instead, follow these steps:
+
+1. Go to your GitHub repository.  
+2. Navigate to **Settings** → **Secrets and variables** → **Actions** → **New repository secret**.  
+3. Create a secret for each user, using a naming convention like:
+   - `GRAFANA_USER_ADMIN_PASSWORD`
+   - `GRAFANA_USER_DEVUSER_PASSWORD`
+   - `GRAFANA_USER_OPSUSER_PASSWORD`
+4. Store each user's password as a separate GitHub Secret.
+
+## Example `values.yaml` Configuration
+
+```yaml
+grafana:
+  users:
+    - admin
+    - devuser
+    - opsuser
+  userPasswords:
+    - "${GRAFANA_USER_ADMIN_PASSWORD}"
+    - "${GRAFANA_USER_DEVUSER_PASSWORD}"
+    - "${GRAFANA_USER_OPSUSER_PASSWORD}"
