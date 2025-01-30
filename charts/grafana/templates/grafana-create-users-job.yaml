@@ -25,7 +25,7 @@ spec:
                 echo "Creating user $name with role $role..."
                 curl -X POST "$GRAFANA_URL/api/admin/users" \
                   -H "Content-Type: application/json" \
-                  -d "{\"name\": \"$name\", \"email\": \"$name@example.com\", \"login\": \"$name\", \"password\": \"$password\"}"
+                  -d "{\"name\": \"$name\", \"login\": \"$name\", \"password\": \"$password\"}"
 
                 userId=$(curl -s "$GRAFANA_URL/api/users/lookup?login=$name" | jq -r '.id')
 
